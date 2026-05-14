@@ -1,39 +1,24 @@
 package com.finora.util;
 
-import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.sql.Connection;
+import java.sql.DriverManager;
 
-/**
- * Servlet implementation class DBConfig
- */
-@WebServlet("/DBConfig")
-public class DBConfig extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+public class DBConfig {
 
-    /**
-     * Default constructor. 
-     */
-    public DBConfig() {
-        // TODO Auto-generated constructor stub
+    private static final String URL = "jdbc:mysql://localhost:3306/finora_db";
+    private static final String USER = "root";
+    private static final String PASSWORD = "";
+
+    public static Connection getConnection() {
+        Connection conn = null;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(URL, USER, PASSWORD);
+            System.out.println("Connected to Finora DB");
+        } catch (Exception e) {
+            System.out.println("DB Connection Failed");
+            e.printStackTrace();
+        }
+        return conn;
     }
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
-
 }

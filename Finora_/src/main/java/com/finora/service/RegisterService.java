@@ -1,39 +1,15 @@
 package com.finora.service;
 
-import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.finora.dao.UserDAO;
+import com.finora.util.PasswordUtil;
 
-/**
- * Servlet implementation class RegisterService
- */
-@WebServlet("/RegisterService")
-public class RegisterService extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+public class RegisterService {
+    UserDAO dao = new UserDAO();
 
-    /**
-     * Default constructor. 
-     */
-    public RegisterService() {
-        // TODO Auto-generated constructor stub
+    public void addUser(String firstName, String lastName, String username, String dob,
+                        String gender, String email, String number, String password, int programId) throws Exception {
+        // Hash the password before storing
+        password = PasswordUtil.getHashPassword(password);
+        dao.insertUser(firstName, lastName, username, dob, gender, email, number, password, programId);
     }
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
-
 }

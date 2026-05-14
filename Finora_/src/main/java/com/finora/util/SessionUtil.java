@@ -1,39 +1,32 @@
 package com.finora.util;
 
-import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
-/**
- * Servlet implementation class SessionUtil
- */
-@WebServlet("/SessionUtil")
-public class SessionUtil extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+public class SessionUtil {
 
-    /**
-     * Default constructor. 
-     */
-    public SessionUtil() {
-        // TODO Auto-generated constructor stub
+    public static void setAttribute(HttpServletRequest request, String name, Object value, int seconds) {
+        HttpSession session = request.getSession(true);
+        session.setAttribute(name, value);
+        session.setMaxInactiveInterval(seconds);
     }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-	}
+    public static Object getAttribute(HttpServletRequest request, String name) {
+        HttpSession session = request.getSession(false);
+        return (session != null) ? session.getAttribute(name) : null;
+    }
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
+    public static void removeAttribute(HttpServletRequest request, String name) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.removeAttribute(name);
+        }
+    }
 
+    public static void invalidateSession(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+    }
 }

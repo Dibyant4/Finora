@@ -1,39 +1,42 @@
 package com.finora.filter;
 
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.annotation.WebFilter;
+import jakarta.servlet.http.HttpFilter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import com.finora.util.SessionUtil;
 
 /**
- * Servlet implementation class SerialVersionsUID
+ * Redirects already-logged-in users away from guest pages to the dashboard.
  */
-@WebServlet("/SerialVersionsUID")
-public class GuessFilter extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+@WebFilter(urlPatterns = { "/Login", "/Register", "/Home", "/Landing", "/" })
+public class GuessFilter extends HttpFilter implements Filter {
 
-    /**
-     * Default constructor. 
-     */
-    public GuessFilter() {
-        // TODO Auto-generated constructor stub
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+
+        boolean isLoggedIn = SessionUtil.getAttribute(httpRequest, "user") != null;
+
+        if (isLoggedIn) {
+            // Already logged in — send to dashboard
+            httpResponse.sendRedirect(httpRequest.getContextPath() + "/Admin_Dashboard");
+        } else {
+            // Guest — let them through
+            chain.doFilter(request, response);
+        }
     }
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
-
 }

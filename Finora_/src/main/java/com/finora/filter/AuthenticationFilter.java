@@ -1,39 +1,51 @@
 package com.finora.filter;
 
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+import jakarta.servlet.annotation.WebFilter;
+import jakarta.servlet.http.HttpFilter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import com.finora.util.SessionUtil;
 
 /**
- * Servlet implementation class AuthenticationFilter
+ * Blocks unauthenticated access to protected pages.
+ * If the user is not logged in, redirects to /Login.
  */
-@WebServlet("/AuthenticationFilter")
-public class AuthenticationFilter extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+@WebFilter(urlPatterns = { "/Admin_Dashboard", "/User_profile", "/logout", "/getimage" })
+public class AuthenticationFilter extends HttpFilter implements Filter {
 
-    /**
-     * Default constructor. 
-     */
+    private static final long serialVersionUID = 1L;
+
     public AuthenticationFilter() {
-        // TODO Auto-generated constructor stub
+        super();
     }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-	}
+    public void destroy() {}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
 
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+
+        boolean isLoggedIn = SessionUtil.getAttribute(httpRequest, "user") != null;
+
+        if (isLoggedIn) {
+            chain.doFilter(request, response);
+        } else {
+            // Prevent browser from caching protected pages
+            httpResponse.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+            httpResponse.sendRedirect(httpRequest.getContextPath() + "/Login");
+        }
+    }
+
+    public void init(FilterConfig fConfig) throws ServletException {}
 }

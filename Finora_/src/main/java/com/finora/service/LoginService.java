@@ -1,39 +1,37 @@
 package com.finora.service;
 
-import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.finora.dao.UserDAO;
+import com.finora.model.UserModel;
+import com.finora.util.PasswordUtil;
 
-/**
- * Servlet implementation class LoginService
- */
-@WebServlet("/LoginService")
-public class LoginService extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+public class LoginService {
+    UserDAO userDAO = new UserDAO();
 
-    /**
-     * Default constructor. 
-     */
-    public LoginService() {
-        // TODO Auto-generated constructor stub
+    public String authenticate(String username, String password) {
+
+        if (username == null || username.trim().isEmpty()) {
+            return "Username is required";
+        }
+        if (password == null || password.isEmpty()) {
+            return "Password is required";
+        }
+
+        try {
+            UserModel user = userDAO.getUserByUsername(username);
+
+            if (user == null) {
+                return "User doesn't exist";
+            }
+
+            if (PasswordUtil.checkPassword(password, user.getPassword())) {
+                return "Success";
+            } else {
+                return "Password is incorrect";
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error in Database";
+        }
     }
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
-
 }

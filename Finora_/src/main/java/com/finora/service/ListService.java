@@ -1,39 +1,13 @@
 package com.finora.service;
 
-import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
-/**
- * Servlet implementation class ListService
- */
-@WebServlet("/ListService")
-public class ListService extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+import com.finora.dao.UserDAO;
+import com.finora.model.UserModel;
 
-    /**
-     * Default constructor. 
-     */
-    public ListService() {
-        // TODO Auto-generated constructor stub
+public class ListService {
+    public List<UserModel> fetchAll() throws Exception {
+        UserDAO userDAO = new UserDAO();
+        return userDAO.getAllUsers();
     }
-
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
-	}
-
 }
