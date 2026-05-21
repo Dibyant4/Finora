@@ -112,6 +112,12 @@
   	<description></description>
   	<servlet-class>com.finora.util.FileUploadUtil</servlet-class>
   </servlet>
+  <servlet>
+  	<servlet-name>AboutServlet</servlet-name>
+  	<display-name>AboutServlet</display-name>
+  	<description></description>
+  	<servlet-class>com.finora.controller.AboutServlet</servlet-class>
+  </servlet>
   <servlet-mapping>
   	<servlet-name>Landing</servlet-name>
   	<url-pattern>/Landing</url-pattern>
@@ -183,5 +189,9 @@
   <servlet-mapping>
   	<servlet-name>FileUploadUtil</servlet-name>
   	<url-pattern>/FileUploadUtil</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>AboutServlet</servlet-name>
+  	<url-pattern>/AboutServlet</url-pattern>
   </servlet-mapping>
 </web-app>
